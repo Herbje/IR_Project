@@ -1,0 +1,5 @@
+numpy
+pandas
+scikit-learn
+pyautocorpus
+ir_datasets
