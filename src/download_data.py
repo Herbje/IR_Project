@@ -3,7 +3,7 @@ import urllib.request
 import ir_datasets
 import pandas as pd
 
-DATA_DIR = "data/raw"
+DATA_DIR = "../data/data/raw"
 os.makedirs(DATA_DIR, exist_ok=True)
 
 MS_MARCO_URLS = {

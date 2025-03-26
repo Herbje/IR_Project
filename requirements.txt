@@ -1,5 +1,14 @@
+# --extra-index-url https://download.pytorch.org/whl/cpu
+# torch
+# torchvision
+# torchaudio
+
 numpy
 pandas
 scikit-learn
 pyautocorpus
 ir_datasets
+python-terrier
+terrier
+pyterrier_colbert @ git+https://github.com/terrierteam/pyterrier_colbert.git@main
+faiss-cpu
