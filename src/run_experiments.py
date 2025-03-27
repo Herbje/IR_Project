@@ -22,7 +22,7 @@ def bm25_fair() -> Retriever:
 
     if os.path.exists(index_properties):
         print(f"Using existing index {index_path.absolute()}")
-        index = pt.IndexFactory.of(index_path)
+        index = pt.IndexFactory.of(str(index_path))
     else:
         indexer = pt.IterDictIndexer(str(index_path))
         indexref = indexer.index(dataset.get_corpus_iter())
@@ -53,9 +53,9 @@ def colbert_fair():
 
 if __name__ == '__main__':
     pd.set_option('display.width', 200)
-    # pd.set_option('display.max_columns', 6)
-    # bm25 = bm25_fair()
-    # bm25.search("test")
-    colbert = colbert_fair()
-    dense_e2e = colbert.end_to_end()
-    dense_e2e.search("chemical reactions").head(5)
+    pd.set_option('display.max_columns', 6)
+    bm25 = bm25_fair()
+    print(bm25.search("test"))
+    # colbert = colbert_fair()
+    # dense_e2e = colbert.end_to_end()
+    # dense_e2e.search("chemical reactions").head(5)
