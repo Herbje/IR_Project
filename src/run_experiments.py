@@ -67,5 +67,5 @@ if __name__ == '__main__':
     bm25 = bm25_fair()
     print(bm25.search("test"), '\n\n\n\n')
     colbert = colbert_fair()
-    dense_e2e = colbert.end_to_end()
-    dense_e2e.search("chemical reactions").head(5)
+    colbert_e2e = colbert.end_to_end()
+    print((colbert_e2e % 5).search("chemical reactions"))
