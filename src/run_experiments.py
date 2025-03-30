@@ -47,17 +47,13 @@ def colbert_fair():
     dataset = pt.get_dataset(f"irds:{FAIR_DATASET_NAME}")
 
     index_name = "trec-fair-colbert"
-
     index_path = Path.cwd() / ".." / "data" / index_name
-    index_properties = index_path / "data.properties"
     # Checkpoint is not trained for trec dataset specifically, may need to try and train it later
     checkpoint = "http://www.dcs.gla.ac.uk/~craigm/colbert.dnn.zip"
 
-    if not os.path.exists(index_properties):
-        print("Creating COLBERT index")
-        indexer = ColBERTIndexer(checkpoint, str(index_path), index_name, chunksize=1, gpu=torch.cuda.is_available())
-        indexer.index(wrapper(dataset.get_corpus_iter()))
-
+    print("Creating COLBERT index")
+    indexer = ColBERTIndexer(checkpoint, str(index_path), index_name, chunksize=3, gpu=torch.cuda.is_available())
+    indexer.index(wrapper(dataset.get_corpus_iter()))
     return indexer.ranking_factory()
 
 
