@@ -13,14 +13,12 @@ from pyterrier.terrier import Retriever
 from pyterrier_colbert.indexing import ColBERTIndexer
 from pyterrier_colbert.ranking import ColBERTFactory
 
-FAIR_DATASET_NAME = "trec-fair/2021"
-# FAIR_TRAIN_DATASET_NAME = "trec-fair/2021/train"
-# FAIR_EVAL_DATASET_NAME = "trec-fair/2021/eval"
+VASWANI_DATASET_NAME = "vaswani"
 
-def bm25_fair() -> Retriever:
-    dataset = pt.get_dataset(f"irds:{FAIR_DATASET_NAME}")
+def bm25_vaswani() -> Retriever:
+    dataset = pt.get_dataset(f"irds:{VASWANI_DATASET_NAME}")
 
-    index_path = Path.cwd() / ".." / "data" / "trec-fair-bm25"
+    index_path = Path.cwd() / ".." / "data" / "trec-vaswani-bm25"
     index_properties = index_path / "data.properties"
 
     if os.path.exists(index_properties):
@@ -43,10 +41,10 @@ def wrapper(iterator):
         else:
             warning(f"Empty text at index {index - 1} in corpus")
 
-def colbert_fair():
-    dataset = pt.get_dataset(f"irds:{FAIR_DATASET_NAME}")
+def colbert_vaswani():
+    dataset = pt.get_dataset(f"irds:{VASWANI_DATASET_NAME}")
 
-    index_name = "trec-fair-colbert"
+    index_name = "trec-vaswani-colbert"
     index_path = Path.cwd() / ".." / "data" / index_name
     # Checkpoint is not trained for trec dataset specifically, may need to try and train it later
     checkpoint = "http://www.dcs.gla.ac.uk/~craigm/colbert.dnn.zip"
@@ -60,8 +58,8 @@ def colbert_fair():
 if __name__ == '__main__':
     pd.set_option('display.width', 200)
     pd.set_option('display.max_columns', 6)
-    bm25 = bm25_fair()
+    bm25 = bm25_vaswani()
     print(bm25.search("test"), '\n\n\n\n')
-    colbert = colbert_fair()
+    colbert = colbert_vaswani()
     colbert_e2e = colbert.end_to_end()
     print((colbert_e2e % 5).search("chemical reactions"))
