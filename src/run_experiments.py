@@ -15,25 +15,10 @@ from pyterrier_colbert.ranking import ColBERTFactory
 
 FAIR_DATASET_NAME = "trec-fair/2021"
 
-def bm25_fair() -> Retriever:
+def index_fair() -> Retriever:
     dataset = pt.get_dataset(f"irds:{FAIR_DATASET_NAME}")
 
-    index_path = Path(__file__).parent / ".." / "data" / "trec-fair-bm25"
-    index_properties = index_path / "data.properties"
-
-    if os.path.exists(index_properties):
-        print(f"Using existing index {index_path.absolute()}")
-        index = pt.IndexFactory.of(str(index_path))
-    else:
-        indexer = pt.IterDictIndexer(str(index_path))
-        indexref = indexer.index(dataset.get_corpus_iter())
-        index = pt.IndexFactory.of(indexref)
-    return index
-
-def tf_idf_fair() -> Retriever:
-    dataset = pt.get_dataset(f"irds:{FAIR_DATASET_NAME}")
-
-    index_path = Path.cwd() / ".." / "data" / "trec-fair-tf-idf"
+    index_path = Path.cwd() / ".." / "data" / "trec-fair-index"
     index_properties = index_path / "data.properties"
 
     if os.path.exists(index_properties):
@@ -81,8 +66,8 @@ if __name__ == '__main__':
     pd.set_option('display.width', 200)
     pd.set_option('display.max_columns', 6)
 
-    bm25 = pt.terrier.Retriever(bm25_fair(), wmodel="BM25")
+    bm25 = pt.terrier.Retriever(index_fair(), wmodel="BM25")
     print(bm25.search("test"), '\n\n\n\n')
 
-    tf_idf = pt.terrier.Retriever(tf_idf_fair(), wmodel="TF_IDF")
+    tf_idf = pt.terrier.Retriever(index_fair(), wmodel="TF_IDF")
     print(tf_idf.search("test"))
