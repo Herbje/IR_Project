@@ -9,7 +9,9 @@ This project analyzes bias in search ranking models by using fairness metrics an
 - `notebooks/` - Jupyter notebooks for experiments.
 
 ## 🚀 Getting Started
-### 1️⃣ Install dependencies
+### Install dependencies
+
+Make sure to use python 3.12 with the dev headers included.
 
 ```bash
 pip install -r requirements.txt
