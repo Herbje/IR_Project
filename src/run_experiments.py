@@ -4,7 +4,8 @@ from pathlib import Path
 import pandas as pd
 import pyterrier as pt
 
-pt.init()
+if not pt.started():
+    pt.init()
 
 from pyterrier.terrier import Retriever
 from pyterrier_colbert.indexing import ColBERTIndexer
