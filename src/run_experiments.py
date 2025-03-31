@@ -33,6 +33,22 @@ def bm25_fair() -> Retriever:
 
     return pt.terrier.Retriever(index, wmodel="BM25")
 
+def tf_idf_fair() -> Retriever:
+    dataset = pt.get_dataset(f"irds:{FAIR_DATASET_NAME}")
+
+    index_path = Path.cwd() / ".." / "data" / "trec-fair-tf-idf"
+    index_properties = index_path / "data.properties"
+
+    if os.path.exists(index_properties):
+        print(f"Using existing index {index_path.absolute()}")
+        index = pt.IndexFactory.of(str(index_path))
+    else:
+        indexer = pt.IterDictIndexer(str(index_path))
+        indexref = indexer.index(dataset.get_corpus_iter())
+        index = pt.IndexFactory.of(indexref)
+
+    return pt.terrier.Retriever(index, wmodel="TF_IDF")
+
 index = 0
 def wrapper(iterator):
     global index
@@ -60,8 +76,9 @@ def colbert_fair():
 if __name__ == '__main__':
     pd.set_option('display.width', 200)
     pd.set_option('display.max_columns', 6)
+
     bm25 = bm25_fair()
     print(bm25.search("test"), '\n\n\n\n')
-    colbert = colbert_fair()
-    colbert_e2e = colbert.end_to_end()
-    print((colbert_e2e % 5).search("chemical reactions"))
+
+    tf_idf = tf_idf_fair()
+    print(tf_idf.search("test"))
