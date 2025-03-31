@@ -1,7 +1,7 @@
 import re
 import math
 import random
-from run_experiments import bm25_vaswani
+from run_experiments import index_fair
 import numpy as np
 from pathlib import Path
 import pyterrier as pt
@@ -14,7 +14,7 @@ from sklearn import linear_model
 
 def re_index(temp_index, m):
     samples = dict()
-    index_path = Path(__file__).parent / ".." / "data" / "temp_vaswani-bm25"
+    index_path = Path(__file__).parent / ".." / "data" / "temp-trec-fair-index"
     shutil.rmtree(index_path)
     indexer = pt.IterDictIndexer(str(index_path))
     indexref = indexer.index(temp_index)
@@ -30,6 +30,7 @@ def variant_of_masked_sampler(dataset, d, m, chunk_size=3, v=0.75):
     for c_d in dataset.get_corpus_iter():
         if c_d['docno'] == d['docno']:
             d_text = c_d['text']
+            break
 
     # Create segments of chunk size
     segments, current, i = [], [], 1
@@ -61,7 +62,7 @@ def get_term_w(d, term):
     return 0
 
 
-def make_plot(clf, terms, query, rank):
+def make_plot(clf, terms, query, ranker, rank):
     coefs = pd.DataFrame(clf.coef_,
                          columns=["Coefficients"],
                          index=terms,)
@@ -69,11 +70,11 @@ def make_plot(clf, terms, query, rank):
     plt.title('Query: ' + query['query'])
     plt.axvline(x=0, color=".5")
     plt.xlabel("Coefficient values")
-    plt.savefig(Path(__file__).parent / ".." / "result_images" / ('query_' + str(query['qid']) +"_r_" + str(rank) + ".png"))
+    plt.savefig(Path(__file__).parent / ".." / (ranker + "_result_images") / ('query_' + str(query['qid']) +"_r_" + str(rank) + ".png"))
     return
 
 
-def lirme(dataset, index, document, query, sampler, rank, m=200, h=1):
+def lirme(dataset, index, document, query, sampler, ranker, rank, m=200, h=1):
     di, doi, lex = index.getDirectIndex(), index.getDocumentIndex(), index.getLexicon()
     terms = [lex.getLexiconEntry(p.getId()).getKey() for p in di.getPostings(doi.getDocumentEntry(int(document['docid'])))]
     terms_freq = [p.getFrequency() for p in di.getPostings(doi.getDocumentEntry(int(document['docid'])))]
@@ -92,14 +93,19 @@ def lirme(dataset, index, document, query, sampler, rank, m=200, h=1):
     rho = [0 if math.isnan(i) else i for i in rho]
     clf = linear_model.Lasso(alpha=0.1, fit_intercept=False)
     clf.fit(np.array(res), np.full(m, document['score']), sample_weight=rho)
-    make_plot(clf, terms, query, rank)
+    make_plot(clf, terms, query, ranker, rank)
     return clf.coef_
 
 
 if __name__ == '__main__':
-    vaswani_dataset = pt.get_dataset(f"irds:vaswani")
-    bm25_index = bm25_vaswani()
-    bm25 = pt.terrier.Retriever(bm25_index, wmodel="BM25")
-    for q_ind, q in vaswani_dataset.get_topics().iterrows():
+    fair_dataset = pt.get_dataset(f"irds:trec-fair/2021")
+    index_fair = index_fair()
+    bm25 = pt.terrier.Retriever(index_fair, wmodel="BM25")
+    for q_ind, q in fair_dataset.get_topics().iterrows():
         for r, (res_ind, res_d) in enumerate((bm25 % 5).search(q['query']).iterrows()):
-            lirme(vaswani_dataset, bm25_index, res_d, q, variant_of_masked_sampler, r, m=200, h=1)
+            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'bm25', r, m=200, h=1)
+
+    tf_idf = pt.terrier.Retriever(index_fair, wmodel="TF_IDF")
+    for q_ind, q in fair_dataset.get_topics().iterrows():
+        for r, (res_ind, res_d) in enumerate((tf_idf % 5).search(q['query']).iterrows()):
+            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'tf_idf', r, m=200, h=1)
