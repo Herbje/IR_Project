@@ -13,3 +13,7 @@ Bias Mitigation
 
 Note:
 First team argument, must report
+
+
+
+Bias Measurement: Hypothesis Testing -> One -> Nominal -> Two (Biased vs Unbiased) -> One (Like Gender OR Race etc) -> Continuous -> Logistic Regression or Point-biserial Correlation

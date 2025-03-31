@@ -13,12 +13,12 @@ from pyterrier.terrier import Retriever
 from pyterrier_colbert.indexing import ColBERTIndexer
 from pyterrier_colbert.ranking import ColBERTFactory
 
-VASWANI_DATASET_NAME = "vaswani"
+FAIR_DATASET_NAME = "trec-fair/2021"
 
-def bm25_vaswani() -> Retriever:
-    dataset = pt.get_dataset(f"irds:{VASWANI_DATASET_NAME}")
+def bm25_fair() -> Retriever:
+    dataset = pt.get_dataset(f"irds:{FAIR_DATASET_NAME}")
 
-    index_path = Path(__file__).parent / ".." / "data" / "vaswani-bm25"
+    index_path = Path(__file__).parent / ".." / "data" / "trec-fair-bm25"
     index_properties = index_path / "data.properties"
 
     if os.path.exists(index_properties):
@@ -28,6 +28,22 @@ def bm25_vaswani() -> Retriever:
         indexer = pt.IterDictIndexer(str(index_path))
         indexref = indexer.index(dataset.get_corpus_iter())
         index = pt.IndexFactory.of(indexref)
+    return index
+
+def tf_idf_fair() -> Retriever:
+    dataset = pt.get_dataset(f"irds:{FAIR_DATASET_NAME}")
+
+    index_path = Path.cwd() / ".." / "data" / "trec-fair-tf-idf"
+    index_properties = index_path / "data.properties"
+
+    if os.path.exists(index_properties):
+        print(f"Using existing index {index_path.absolute()}")
+        index = pt.IndexFactory.of(str(index_path))
+    else:
+        indexer = pt.IterDictIndexer(str(index_path))
+        indexref = indexer.index(dataset.get_corpus_iter())
+        index = pt.IndexFactory.of(indexref)
+
     return index
 
 ind = 0
@@ -40,12 +56,13 @@ def wrapper(iterator):
         else:
             warning(f"Empty text at index {ind - 1} in corpus")
 
-def colbert_vaswani():
-    dataset = pt.get_dataset(f"irds:{VASWANI_DATASET_NAME}")
+def colbert_fair():
+    dataset = pt.get_dataset(f"irds:{FAIR_DATASET_NAME}")
 
-    index_name = "vaswani-colbert"
-    index_path = Path(__file__).parent / ".." / "data" / index_name
+    index_name = "trec-fair-colbert"
+    index_path = Path(__file__) / ".." / "data" / index_name
     index_name_check = index_path / index_name / 'ivfpq.faiss'
+
     # Checkpoint is not trained for trec dataset specifically, may need to try and train it later
     checkpoint = "http://www.dcs.gla.ac.uk/~craigm/colbert.dnn.zip"
 
@@ -63,8 +80,9 @@ def colbert_vaswani():
 if __name__ == '__main__':
     pd.set_option('display.width', 200)
     pd.set_option('display.max_columns', 6)
-    bm25 = pt.terrier.Retriever(bm25_vaswani(), wmodel="BM25")
+
+    bm25 = pt.terrier.Retriever(bm25_fair(), wmodel="BM25")
     print(bm25.search("test"), '\n\n\n\n')
-    colbert = colbert_vaswani()
-    colbert_e2e = colbert.end_to_end()
-    print((colbert_e2e % 5).search("chemical reactions"))
+
+    tf_idf = pt.terrier.Retriever(tf_idf_fair(), wmodel="TF_IDF")
+    print(tf_idf.search("test"))
