@@ -4,20 +4,20 @@
   "rank": 4,
   "docid": 947556,
   "coef": {
-    "mai": 0.0,
-    "see": -0.0,
-    "spain": -0.0,
-    "refer": 0.0,
+    "mai": -0.0,
+    "see": 0.0,
+    "spain": 0.0,
+    "refer": -0.0,
     "itali": -0.0,
-    "south": -0.0,
-    "economi": 1.003328976792591,
-    "financ": 0.10694737911478178,
+    "south": 0.0,
+    "economi": 0.9283278974992627,
+    "financ": 0.060381053932290436,
     "cambodia": -0.0,
-    "ministri": 0.4736027740583037,
-    "haiti": -0.0,
-    "peru": 0.0,
-    "korea": -0.0,
+    "ministri": 0.5706926710743603,
+    "haiti": 0.0,
+    "peru": -0.0,
+    "korea": 0.0,
     "ecuador": 0.0,
-    "benin": -0.0
+    "benin": 0.0
   }
 }

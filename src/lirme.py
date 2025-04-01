@@ -75,7 +75,7 @@ def make_plot_json(clf, terms, query, docid, ranker, rank):
     coefs = pd.DataFrame(clf.coef_,
                          columns=["Coefficients"],
                          index=terms,)
-    coefs.plot.barh(figsize=(9, 7))
+    coefs.plot.barh(figsize=(10, 15))
     plt.title('Query: ' + query['text'])
     plt.axvline(x=0, color=".5")
     plt.xlabel("Coefficient values")
@@ -131,18 +131,18 @@ if __name__ == '__main__':
     tf_idf = pt.terrier.Retriever(index_fair, wmodel="TF_IDF")
     for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows(), total=eval_size):
         for r, (res_ind, res_d) in enumerate((tf_idf % 10).search(q['text']).iterrows()):
-            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'tf_idf', r, m=200, h=1)
+            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'tf_idf', r, m=500, h=1)
 
     # Generate results for BM25 ranker
     print('\nRunning LIRME for BM25 ranker...')
     bm25 = pt.terrier.Retriever(index_fair, wmodel="BM25")
     for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows(), total=eval_size):
         for r, (res_ind, res_d) in enumerate((bm25 % 10).search(q['text']).iterrows()):
-            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'bm25', r, m=200, h=1)
+            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'bm25', r, m=500, h=1)
 
     # Generate results for PL2 ranker
     print('\nRunning LIRME for PL2 ranker...')
     tf_idf = pt.terrier.Retriever(index_fair, wmodel="PL2")
     for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows(), total=eval_size):
         for r, (res_ind, res_d) in enumerate((tf_idf % 10).search(q['text']).iterrows()):
-            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'pl2', r, m=200, h=1)
+            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'pl2', r, m=500, h=1)
