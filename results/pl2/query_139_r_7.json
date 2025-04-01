@@ -1,0 +1,23 @@
+{
+  "qid": "139",
+  "query": "European Union Governance",
+  "rank": 7,
+  "docid": 5310713,
+  "coef": {
+    "state": 2.8916425189703845,
+    "list": -0.0,
+    "union": 2.780632251463996,
+    "organis": 2.9672451870727916,
+    "repres": 0.0,
+    "govern": -0.0,
+    "relat": 1.2155206817214137,
+    "offici": 0.0,
+    "foreign": 0.0,
+    "european": 0.0,
+    "eastern": 0.0045689236430881425,
+    "ambassador": 0.016088648676915528,
+    "saint": 0.0,
+    "caribbean": 0.0,
+    "lucia": 0.0
+  }
+}

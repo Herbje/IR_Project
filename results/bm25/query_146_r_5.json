@@ -1,0 +1,17 @@
+{
+  "qid": "146",
+  "query": "Non-profit Organization",
+  "rank": 5,
+  "docid": 4234140,
+  "coef": {
+    "mai": 0.1479635714249126,
+    "organ": 0.0,
+    "non": 8.662426983778662,
+    "live": 0.0,
+    "free": 1.9070206131117002e-14,
+    "refer": 0.0,
+    "swim": 0.0,
+    "parasit": 0.0,
+    "sessil": 0.0
+  }
+}

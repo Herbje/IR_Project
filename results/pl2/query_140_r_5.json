@@ -1,0 +1,30 @@
+{
+  "qid": "140",
+  "query": "Artificial Intelligence and Machine Learning",
+  "rank": 5,
+  "docid": 5056025,
+  "coef": {
+    "major": 2.813324393150717,
+    "includ": 0.0,
+    "histori": 0.0,
+    "event": 4.3464217967225505,
+    "learn": -0.0,
+    "network": 3.02342422229985,
+    "see": 0.0,
+    "unit": 2.669224577415516,
+    "achiev": 0.0,
+    "neural": 0.048642048787849404,
+    "translat": 0.4567723512464179,
+    "simpl": 2.2012352396416315,
+    "mileston": 0.0,
+    "intellig": 0.0,
+    "artifici": -0.0,
+    "output": 0.0,
+    "page": 0.0,
+    "machin": 1.5087967382194458,
+    "input": 0.0,
+    "discoveri": 0.0,
+    "overview": 0.0,
+    "timelin": 5.215991001696494
+  }
+}

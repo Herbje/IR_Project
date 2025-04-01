@@ -1,0 +1,16 @@
+{
+  "qid": "131",
+  "query": "Biologists",
+  "rank": 8,
+  "docid": 4955578,
+  "coef": {
+    "mai": 0.0,
+    "canadian": -0.0,
+    "refer": 0.0,
+    "footbal": 3.559531680246569,
+    "british": 0.0,
+    "biologist": -0.6548662091140667,
+    "toni": 2.597246031899362,
+    "sinclair": 0.0
+  }
+}

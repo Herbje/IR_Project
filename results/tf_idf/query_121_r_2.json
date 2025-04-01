@@ -1,0 +1,33 @@
+{
+  "qid": "121",
+  "query": "Racquet Sports",
+  "rank": 2,
+  "docid": 468141,
+  "coef": {
+    "state": 0.0,
+    "north": 4.021400708547085e-05,
+    "bodi": 2.9451479913570875,
+    "american": 0.0,
+    "govern": 0.12820897044257756,
+    "citi": 0.0,
+    "new": 0.0,
+    "extern": 0.0,
+    "unit": 0.0,
+    "member": -0.0,
+    "canada": -0.0,
+    "associ": 1.4135487801584565,
+    "link": 1.8457152868756703,
+    "chicago": -0.0,
+    "sport": 0.0,
+    "philadelphia": -0.0,
+    "york": 1.1522368374227643,
+    "tenni": 2.738041433075616,
+    "boston": -0.0,
+    "club": -0.0,
+    "detroit": -0.0,
+    "racket": -0.0,
+    "racquet": 2.233363295657237,
+    "montreal": 0.0,
+    "tuxedo": 0.0066983172016039545
+  }
+}

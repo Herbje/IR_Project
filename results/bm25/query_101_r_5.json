@@ -1,0 +1,21 @@
+{
+  "qid": "101",
+  "query": "Mathematicians",
+  "rank": 5,
+  "docid": 4795635,
+  "coef": {
+    "list": 0.28763902609906367,
+    "countri": 4.100505201877456,
+    "includ": 0.0,
+    "later": 0.0,
+    "see": 0.0,
+    "who": 0.0,
+    "scienc": -0.0,
+    "technolog": -0.0,
+    "brazil": 0.0,
+    "born": 2.820122393073955,
+    "famou": 0.0,
+    "mathematician": 4.28378914896336,
+    "brazilian": 0.4061054298432603
+  }
+}

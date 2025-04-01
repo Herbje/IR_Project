@@ -1,0 +1,27 @@
+{
+  "qid": "134",
+  "query": "Botany",
+  "rank": 1,
+  "docid": 2446412,
+  "coef": {
+    "journal": 3.2388580477682605,
+    "mai": -1.5020068180842838,
+    "call": 0.0,
+    "de": 0.0,
+    "american": 0.0,
+    "canadian": 0.0,
+    "academ": -0.0,
+    "see": 0.0,
+    "new": -1.6609874017328679,
+    "refer": 0.0,
+    "confus": 0.0,
+    "foreign": 0.0,
+    "european": 0.0,
+    "british": -0.35117344829244657,
+    "botani": 0.4920952900314841,
+    "australian": 0.0,
+    "botaniqu": 0.0715408040002766,
+    "hindawi": 0.0,
+    "watsonia": 0.0
+  }
+}

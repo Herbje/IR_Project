@@ -1,0 +1,23 @@
+{
+  "qid": "113",
+  "query": "Computer Scientists",
+  "rank": 9,
+  "docid": 5587514,
+  "coef": {
+    "mai": 0.0,
+    "professor": 0.0,
+    "american": 0.0,
+    "author": 0.07850071066136174,
+    "novelist": 3.0932513600275605e-15,
+    "scientist": 0.0,
+    "refer": 0.0,
+    "comput": 0.4699918295386674,
+    "romant": 4.072764252268984,
+    "mysteri": 0.0,
+    "kelli": 3.9757583720161067,
+    "novel": 0.0,
+    "microbiolog": 0.0,
+    "humor": 0.0,
+    "dian": 0.5117620305586699
+  }
+}

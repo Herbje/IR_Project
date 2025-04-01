@@ -1,0 +1,23 @@
+{
+  "qid": "145",
+  "query": "Finance",
+  "rank": 4,
+  "docid": 947556,
+  "coef": {
+    "mai": 0.0,
+    "see": 0.0,
+    "spain": 0.0,
+    "refer": 0.0,
+    "itali": -0.0,
+    "south": -0.0,
+    "economi": 0.6177626948783046,
+    "financ": -0.0,
+    "cambodia": -0.0,
+    "ministri": 0.5785200268488194,
+    "haiti": 0.0,
+    "peru": -0.0,
+    "korea": -0.021999193965577007,
+    "ecuador": 0.0,
+    "benin": 0.0
+  }
+}

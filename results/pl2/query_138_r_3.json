@@ -1,0 +1,27 @@
+{
+  "qid": "138",
+  "query": "Modern Art",
+  "rank": 3,
+  "docid": 1474004,
+  "coef": {
+    "mai": 0.0,
+    "nation": 0.0,
+    "art": 2.0645060699844096,
+    "see": 0.0,
+    "new": -0.16790563618119667,
+    "refer": 2.105794111756107,
+    "modern": 0.0,
+    "uk": 0.0,
+    "itali": 0.0,
+    "galleri": 0.14597968386286111,
+    "rome": 0.0,
+    "india": 0.0,
+    "scotland": 0.2087461114814384,
+    "disambigu": 0.0,
+    "scottish": 0.0,
+    "mumbai": 0.0,
+    "lago": 0.0,
+    "delhi": 0.0,
+    "bangalor": -0.0
+  }
+}

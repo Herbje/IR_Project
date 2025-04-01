@@ -1,0 +1,15 @@
+{
+  "qid": "127",
+  "query": "Clergy",
+  "rank": 9,
+  "docid": 2796205,
+  "coef": {
+    "mai": 0.0,
+    "christian": 0.0,
+    "refer": 0.0,
+    "ordin": 0.0,
+    "judaism": 0.0,
+    "clergi": 4.416870315012062,
+    "lgbt": 0.0
+  }
+}

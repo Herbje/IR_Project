@@ -1,0 +1,27 @@
+{
+  "qid": "146",
+  "query": "Non-profit Organization",
+  "rank": 8,
+  "docid": 805575,
+  "coef": {
+    "system": 0.0428548907288809,
+    "mai": 0.0,
+    "form": 0.0,
+    "found": 0.0,
+    "organ": 0.31530467773673215,
+    "see": -0.0,
+    "non": -0.0,
+    "method": 2.067470358012472,
+    "live": 2.0187705687984385,
+    "known": 0.0,
+    "structur": 1.9439387539892554,
+    "refer": 0.0,
+    "pattern": 0.004315075678320358,
+    "model": 0.0,
+    "formula": 0.0,
+    "compound": 1.4378108314177245,
+    "metaphor": -0.0,
+    "disambigu": -0.0,
+    "molecular": -0.0
+  }
+}

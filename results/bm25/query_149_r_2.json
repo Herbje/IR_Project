@@ -1,0 +1,18 @@
+{
+  "qid": "149",
+  "query": "Public Transport",
+  "rank": 2,
+  "docid": 2977320,
+  "coef": {
+    "mai": 0.006713266586213386,
+    "public": 0.0,
+    "author": 0.0,
+    "refer": 3.5583699065959986,
+    "western": 0.0,
+    "counti": 0.0,
+    "transport": 3.058510110172322,
+    "australia": 2.264504346087135,
+    "denmark": -0.03965100306232344,
+    "mtland": 0.0
+  }
+}

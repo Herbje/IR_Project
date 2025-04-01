@@ -1,0 +1,26 @@
+{
+  "qid": "141",
+  "query": "Human Exploration",
+  "rank": 7,
+  "docid": 1691842,
+  "coef": {
+    "product": 0.05174135290159789,
+    "us": 0.0,
+    "public": -0.0,
+    "servic": 0.3944975433118736,
+    "call": 0.0,
+    "environment": -0.0,
+    "softwar": 5.050546738293685,
+    "human": -0.0,
+    "data": 0.2783660446418083,
+    "explor": 2.7859563039995208,
+    "compani": 2.94199578649367,
+    "ibm": -0.0,
+    "olfactori": -0.0,
+    "unep": -0.0,
+    "googl": -0.0,
+    "exoplanet": 0.0,
+    "azur": 0.0,
+    "opendx": -0.0
+  }
+}

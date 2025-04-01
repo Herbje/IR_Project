@@ -1,0 +1,30 @@
+{
+  "qid": "117",
+  "query": "Activist",
+  "rank": 8,
+  "docid": 6240040,
+  "coef": {
+    "type": 0.0,
+    "focus": 0.2959540094700683,
+    "north": 1.2176510292696932,
+    "mai": 1.2016783944544298,
+    "preserv": 0.0,
+    "america": 0.14561412811446584,
+    "land": 0.0,
+    "environment": 1.569375792484533,
+    "justic": 0.0,
+    "local": 0.0,
+    "defend": 0.0889532496754761,
+    "refer": 0.022704592805646507,
+    "activist": 1.65684231537249,
+    "context": 0.0,
+    "depend": 0.0,
+    "frequent": 0.0,
+    "water": 0.16401429012507107,
+    "climat": 0.0,
+    "indigen": 0.0,
+    "protector": 0.0,
+    "ecosystem": 0.0,
+    "persev": 0.0
+  }
+}

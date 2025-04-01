@@ -1,0 +1,26 @@
+{
+  "qid": "134",
+  "query": "Botany",
+  "rank": 4,
+  "docid": 4757514,
+  "coef": {
+    "mai": -0.0,
+    "nation": 0.0,
+    "england": 1.8203645617925537,
+    "institut": 0.8689202336889426,
+    "see": 0.9460881687454491,
+    "china": 0.0,
+    "scienc": 0.0,
+    "refer": -0.0,
+    "adi": 0.0,
+    "agricultur": 0.763875050862001,
+    "academi": 1.2350837283671847,
+    "botani": 2.434918998328307,
+    "chines": 0.0,
+    "aw": 0.0,
+    "poland": 0.0,
+    "kunm": -0.0,
+    "jiangsu": 0.0,
+    "szafer": 0.0
+  }
+}

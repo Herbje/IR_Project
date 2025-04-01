@@ -1,0 +1,21 @@
+{
+  "qid": "140",
+  "query": "Artificial Intelligence and Machine Learning",
+  "rank": 2,
+  "docid": 1545618,
+  "coef": {
+    "be": 5.844327755983797,
+    "mai": 6.743565414323762,
+    "explicitli": 2.574714792439268,
+    "abil": 0.0,
+    "learn": 8.400530871129922,
+    "refer": 0.08971650081386054,
+    "give": 0.0,
+    "program": 0.07383355919189867,
+    "intellig": 1.1480416008096896,
+    "exhibit": 0.0,
+    "artifici": 0.4189117953967614,
+    "comput": 0.0,
+    "machin": 1.4495270877025646
+  }
+}
