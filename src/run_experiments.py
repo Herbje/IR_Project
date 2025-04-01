@@ -18,7 +18,7 @@ FAIR_DATASET_NAME = "trec-fair/2021"
 def index_fair() -> Retriever:
     dataset = pt.get_dataset(f"irds:{FAIR_DATASET_NAME}")
 
-    index_path = Path.cwd() / ".." / "data" / "trec-fair-index"
+    index_path = Path(__file__).parent / ".." / "data" / "trec-fair-index"
     index_properties = index_path / "data.properties"
 
     if os.path.exists(index_properties):
@@ -45,7 +45,7 @@ def colbert_fair():
     dataset = pt.get_dataset(f"irds:{FAIR_DATASET_NAME}")
 
     index_name = "trec-fair-colbert"
-    index_path = Path(__file__) / ".." / "data" / index_name
+    index_path = Path(__file__).parent / ".." / "data" / index_name
     index_name_check = index_path / index_name / 'ivfpq.faiss'
 
     # Checkpoint is not trained for trec dataset specifically, may need to try and train it later

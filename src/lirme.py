@@ -1,4 +1,10 @@
+"""
+This file contains an implementation of LIRME based on the paper:
+'LIRME: Locally Interpretable Ranking Model Explanation' by Manisha Verma and Debasis Ganguly (2019).
+"""
+
 import re
+import json
 import math
 import random
 from run_experiments import index_fair
@@ -10,12 +16,15 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import shutil
 from sklearn import linear_model
+import os
+import tqdm
 
 
 def re_index(temp_index, m):
+    # Re-index in a temp indexation to get the new postings
     samples = dict()
     index_path = Path(__file__).parent / ".." / "data" / "temp-trec-fair-index"
-    shutil.rmtree(index_path)
+    if os.path.exists(index_path): shutil.rmtree(index_path)
     indexer = pt.IterDictIndexer(str(index_path))
     indexref = indexer.index(temp_index)
     index = pt.IndexFactory.of(indexref)
@@ -24,13 +33,10 @@ def re_index(temp_index, m):
         samples[i] = [(lex.getLexiconEntry(p.getId()).getKey(), p.getFrequency()) for p in di.getPostings(doi.getDocumentEntry(i))]
     return samples
 
-def variant_of_masked_sampler(dataset, d, m, chunk_size=3, v=0.75):
-    d_text = None
-
-    for c_d in dataset.get_corpus_iter():
-        if c_d['docno'] == d['docno']:
-            d_text = c_d['text']
-            break
+def variant_of_masked_sampler(dataset, d, m, chunk_size=5, v=0.75):
+    # Get the original text
+    d_text = dataset(pd.DataFrame([d['docno']], columns=['docno']))
+    d_text = d_text['text'].iloc[0]
 
     # Create segments of chunk size
     segments, current, i = [], [], 1
@@ -62,15 +68,27 @@ def get_term_w(d, term):
     return 0
 
 
-def make_plot(clf, terms, query, ranker, rank):
+def make_plot(clf, terms, query, docid, ranker, rank):
+    # Store visualization
+    path = Path(__file__).parent / ".." / (ranker + "_result_images")
     coefs = pd.DataFrame(clf.coef_,
                          columns=["Coefficients"],
                          index=terms,)
     coefs.plot.barh(figsize=(9, 7))
-    plt.title('Query: ' + query['query'])
+    plt.title('Query: ' + query['text'])
     plt.axvline(x=0, color=".5")
     plt.xlabel("Coefficient values")
-    plt.savefig(Path(__file__).parent / ".." / (ranker + "_result_images") / ('query_' + str(query['qid']) +"_r_" + str(rank) + ".png"))
+    plt.savefig(path/ ('query_' + str(query['qid']) +"_r_" + str(rank) + ".png"))
+    plt.close()
+
+    # Store to .json
+    result = dict()
+    for (t, c) in zip(terms, clf.coef_): result[t] = c
+    with open(path / ('query_' + str(query['qid']) +"_r_" + str(rank) + ".json"), "w") as f:
+        output = json.dumps({'qid': query['qid'], 'query': query['text'],
+                             'rank': rank, 'docid': docid, 'coef': result}, indent=2)
+        f.write(output)
+        f.close()
     return
 
 
@@ -91,21 +109,29 @@ def lirme(dataset, index, document, query, sampler, ranker, rank, m=200, h=1):
         rho.append(math.exp(-(distance.cosine(terms_freq, terms_res)**2)/h))
 
     rho = [0 if math.isnan(i) else i for i in rho]
-    clf = linear_model.Lasso(alpha=0.1, fit_intercept=False)
+    clf = linear_model.Lasso(alpha=0.1, fit_intercept=False, max_iter=10000)
     clf.fit(np.array(res), np.full(m, document['score']), sample_weight=rho)
-    make_plot(clf, terms, query, ranker, rank)
+    make_plot(clf, terms, query, document['docid'], ranker, rank)
     return clf.coef_
 
 
 if __name__ == '__main__':
+    # Make the dataset a dict
     fair_dataset = pt.get_dataset(f"irds:trec-fair/2021")
+    fair_dataset = pt.text.get_text(fair_dataset, ['text'])
+
+    # Get queries
+    fair_dataset_eval = pt.get_dataset(f"irds:trec-fair/2021/eval")
     index_fair = index_fair()
+
+    # Generate results for BM25 ranker
     bm25 = pt.terrier.Retriever(index_fair, wmodel="BM25")
-    for q_ind, q in fair_dataset.get_topics().iterrows():
-        for r, (res_ind, res_d) in enumerate((bm25 % 5).search(q['query']).iterrows()):
+    for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows()):
+        for r, (res_ind, res_d) in enumerate((bm25 % 10).search(q['text']).iterrows()):
             lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'bm25', r, m=200, h=1)
 
+    # Generate results for TF-IDF ranker
     tf_idf = pt.terrier.Retriever(index_fair, wmodel="TF_IDF")
-    for q_ind, q in fair_dataset.get_topics().iterrows():
-        for r, (res_ind, res_d) in enumerate((tf_idf % 5).search(q['query']).iterrows()):
+    for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows()):
+        for r, (res_ind, res_d) in enumerate((tf_idf % 10).search(q['text']).iterrows()):
             lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'tf_idf', r, m=200, h=1)
