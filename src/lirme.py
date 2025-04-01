@@ -1,6 +1,7 @@
 """
 This file contains an implementation of LIRME based on the paper:
 'LIRME: Locally Interpretable Ranking Model Explanation' by Manisha Verma and Debasis Ganguly (2019).
+See: https://doi.org/10.1145/3331184.3331377
 """
 
 import re
@@ -33,7 +34,7 @@ def re_index(temp_index, m):
         samples[i] = [(lex.getLexiconEntry(p.getId()).getKey(), p.getFrequency()) for p in di.getPostings(doi.getDocumentEntry(i))]
     return samples
 
-def variant_of_masked_sampler(dataset, d, m, chunk_size=5, v=0.75):
+def variant_of_masked_sampler(dataset, d, m, chunk_size=5, v=0.5):
     # Get the original text
     d_text = dataset(pd.DataFrame([d['docno']], columns=['docno']))
     d_text = d_text['text'].iloc[0]
@@ -68,9 +69,9 @@ def get_term_w(d, term):
     return 0
 
 
-def make_plot(clf, terms, query, docid, ranker, rank):
+def make_plot_json(clf, terms, query, docid, ranker, rank):
     # Store visualization
-    path = Path(__file__).parent / ".." / (ranker + "_result_images")
+    path = Path(__file__).parent / ".." / 'results' / ranker
     coefs = pd.DataFrame(clf.coef_,
                          columns=["Coefficients"],
                          index=terms,)
@@ -109,9 +110,9 @@ def lirme(dataset, index, document, query, sampler, ranker, rank, m=200, h=1):
         rho.append(math.exp(-(distance.cosine(terms_freq, terms_res)**2)/h))
 
     rho = [0 if math.isnan(i) else i for i in rho]
-    clf = linear_model.Lasso(alpha=0.1, fit_intercept=False, max_iter=10000)
+    clf = linear_model.Lasso(alpha=0.1, fit_intercept=False, max_iter=50000)
     clf.fit(np.array(res), np.full(m, document['score']), sample_weight=rho)
-    make_plot(clf, terms, query, document['docid'], ranker, rank)
+    make_plot_json(clf, terms, query, document['docid'], ranker, rank)
     return clf.coef_
 
 
@@ -122,16 +123,26 @@ if __name__ == '__main__':
 
     # Get queries
     fair_dataset_eval = pt.get_dataset(f"irds:trec-fair/2021/eval")
+    eval_size = 49
     index_fair = index_fair()
 
+    # Generate results for TF-IDF ranker
+    print('\nRunning LIRME for TF-IDF ranker...')
+    tf_idf = pt.terrier.Retriever(index_fair, wmodel="TF_IDF")
+    for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows(), total=eval_size):
+        for r, (res_ind, res_d) in enumerate((tf_idf % 10).search(q['text']).iterrows()):
+            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'tf_idf', r, m=200, h=1)
+
     # Generate results for BM25 ranker
+    print('\nRunning LIRME for BM25 ranker...')
     bm25 = pt.terrier.Retriever(index_fair, wmodel="BM25")
-    for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows()):
+    for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows(), total=eval_size):
         for r, (res_ind, res_d) in enumerate((bm25 % 10).search(q['text']).iterrows()):
             lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'bm25', r, m=200, h=1)
 
-    # Generate results for TF-IDF ranker
-    tf_idf = pt.terrier.Retriever(index_fair, wmodel="TF_IDF")
-    for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows()):
+    # Generate results for PL2 ranker
+    print('\nRunning LIRME for PL2 ranker...')
+    tf_idf = pt.terrier.Retriever(index_fair, wmodel="PL2")
+    for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows(), total=eval_size):
         for r, (res_ind, res_d) in enumerate((tf_idf % 10).search(q['text']).iterrows()):
-            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'tf_idf', r, m=200, h=1)
+            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'pl2', r, m=200, h=1)
