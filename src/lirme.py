@@ -93,7 +93,7 @@ def make_plot_json(clf, terms, query, docid, ranker, rank):
     return
 
 
-def lirme(dataset, index, document, query, sampler, ranker, rank, m=200, h=1):
+def lirme(dataset, index, document, query, sampler, ranker, rank, m=750, h=0.75):
     di, doi, lex = index.getDirectIndex(), index.getDocumentIndex(), index.getLexicon()
     terms = [lex.getLexiconEntry(p.getId()).getKey() for p in di.getPostings(doi.getDocumentEntry(int(document['docid'])))]
     terms_freq = [p.getFrequency() for p in di.getPostings(doi.getDocumentEntry(int(document['docid'])))]
@@ -131,18 +131,18 @@ if __name__ == '__main__':
     tf_idf = pt.terrier.Retriever(index_fair, wmodel="TF_IDF")
     for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows(), total=eval_size):
         for r, (res_ind, res_d) in enumerate((tf_idf % 10).search(q['text']).iterrows()):
-            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'tf_idf', r, m=500, h=1)
+            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'tf_idf', r, m=750, h=0.75)
 
     # Generate results for BM25 ranker
     print('\nRunning LIRME for BM25 ranker...')
     bm25 = pt.terrier.Retriever(index_fair, wmodel="BM25")
     for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows(), total=eval_size):
         for r, (res_ind, res_d) in enumerate((bm25 % 10).search(q['text']).iterrows()):
-            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'bm25', r, m=500, h=1)
+            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'bm25', r, m=750, h=0.75)
 
     # Generate results for PL2 ranker
     print('\nRunning LIRME for PL2 ranker...')
     tf_idf = pt.terrier.Retriever(index_fair, wmodel="PL2")
     for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows(), total=eval_size):
         for r, (res_ind, res_d) in enumerate((tf_idf % 10).search(q['text']).iterrows()):
-            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'pl2', r, m=500, h=1)
+            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'pl2', r, m=750, h=0.75)
