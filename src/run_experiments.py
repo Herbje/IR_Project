@@ -16,6 +16,7 @@ from pyterrier_colbert.ranking import ColBERTFactory
 
 FAIR_DATASET_NAME = "trec-fair/2021"
 VASWANI_DATASET = "vaswani"
+MSMARCO_EVAL_DATASET = "msmarco-passage/eval/small"
 
 
 def index_fair() -> Retriever:
@@ -39,6 +40,23 @@ def index_vaswani() -> Retriever:
     dataset = pt.get_dataset(f"irds:{VASWANI_DATASET}")
 
     index_path = Path(__file__).parent / ".." / "data" / f"{VASWANI_DATASET}-index"
+    index_properties = index_path / "data.properties"
+
+    if os.path.exists(index_properties):
+        print(f"Using existing index {index_path.absolute()}")
+        index = pt.IndexFactory.of(str(index_path))
+    else:
+        indexer = pt.IterDictIndexer(str(index_path))
+        indexref = indexer.index(dataset.get_corpus_iter())
+        index = pt.IndexFactory.of(indexref)
+
+    return index
+
+
+def index_msmarco_eval() -> Retriever:
+    dataset = pt.get_dataset(f"irds:{MSMARCO_EVAL_DATASET}")
+
+    index_path = Path(__file__).parent / ".." / "data" / f"{MSMARCO_EVAL_DATASET}-index"
     index_properties = index_path / "data.properties"
 
     if os.path.exists(index_properties):
@@ -90,7 +108,7 @@ def monot5():
     mono = MonoT5ReRanker()
 
     dataset = pt.get_dataset(f"irds:{VASWANI_DATASET}")
-    index = index_vaswani()
+    index = index_msmarco_eval()
     bm25 = pt.BatchRetrieve(index, wmodel="BM25")
     return bm25 >> pt.text.get_text(dataset, "text") >> mono
 
@@ -99,10 +117,10 @@ if __name__ == '__main__':
     pd.set_option('display.width', 200)
     pd.set_option('display.max_columns', 6)
 
-    bm25 = pt.terrier.Retriever(index_vaswani(), wmodel="BM25")
+    bm25 = pt.terrier.Retriever(index_msmarco_eval(), wmodel="BM25")
     print(bm25.search("relativity"), '\n\n\n\n')
     #
-    # tf_idf = pt.terrier.Retriever(index_fair(), wmodel="TF_IDF")
+    # tf_idf = pt.terrier.Retriever(index_msmarco_eval(), wmodel="TF_IDF")
     # print(tf_idf.search("test"))
 
     print(monot5().search("relativity"))
