@@ -1,17 +1,32 @@
 import os.path
+from enum import Enum
 from pathlib import Path
-import torch
 import pandas as pd
 import pyterrier as pt
 from pyterrier_t5 import MonoT5ReRanker
 from pyterrier.terrier import Retriever
 
-
 pt.java.init()
+
+
 # pt.java.set_log_level('DEBUG')
 
 
+class Monot5ModelType(Enum):
+    UNBIASED = 0
+    BIASED = 1
+    SUPERBIASED = 2
+    QUERY = 3
+
+
 MSMARCO_EVAL_DATASET = "msmarco-passage/eval/small"
+
+MODELS = {
+    Monot5ModelType.UNBIASED: './models/unbiased-model-0',
+    Monot5ModelType.BIASED: './models/biased-model-0',
+    Monot5ModelType.SUPERBIASED: './models/super-biased-0',
+    Monot5ModelType.QUERY: './models/query-model-0',
+}
 
 
 def index_msmarco_eval() -> Retriever:
@@ -31,8 +46,8 @@ def index_msmarco_eval() -> Retriever:
     return index
 
 
-def monot5():
-    mono = MonoT5ReRanker()
+def monot5(model=Monot5ModelType.BIASED):
+    mono = MonoT5ReRanker(model=MODELS[model])
     dataset = pt.get_dataset(f"irds:{MSMARCO_EVAL_DATASET}")
     index = index_msmarco_eval()
     bm25 = pt.BatchRetrieve(index, wmodel="BM25")
