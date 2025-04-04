@@ -22,10 +22,10 @@ class Monot5ModelType(Enum):
 MSMARCO_EVAL_DATASET = "msmarco-passage/eval/small"
 
 MODELS = {
-    Monot5ModelType.UNBIASED: './models/unbiased-model-0',
-    Monot5ModelType.BIASED: './models/biased-model-0',
-    Monot5ModelType.SUPERBIASED: './models/super-biased-0',
-    Monot5ModelType.QUERY: './models/query-model-0',
+    Monot5ModelType.UNBIASED: '../models/unbiased-model-0',
+    Monot5ModelType.BIASED: '../models/biased-model-0',
+    Monot5ModelType.SUPERBIASED: '../models/super-biased-0',
+    Monot5ModelType.QUERY: '../models/query-model-0',
 }
 
 
@@ -46,11 +46,12 @@ def index_msmarco_eval() -> Retriever:
     return index
 
 
-def monot5(model=Monot5ModelType.BIASED):
-    mono = MonoT5ReRanker(model=MODELS[model])
+def monot5(model=Monot5ModelType.UNBIASED):
+    print(MODELS[model])
+    mono = MonoT5ReRanker(model=Path(MODELS[model]))
     dataset = pt.get_dataset(f"irds:{MSMARCO_EVAL_DATASET}")
     index = index_msmarco_eval()
-    bm25 = pt.BatchRetrieve(index, wmodel="BM25")
+    bm25 = pt.terrier.Retriever(index, wmodel="BM25")
     return bm25 >> pt.text.get_text(dataset, "text") >> mono
 
 
@@ -59,5 +60,5 @@ if __name__ == '__main__':
     pd.set_option('display.max_columns', 6)
 
     bm25 = pt.terrier.Retriever(index_msmarco_eval(), wmodel="BM25")
-    print(bm25.search("relativity"), '\n\n\n\n')
-    print(monot5().search("relativity"))
+    print(bm25.search("relative"), '\n\n\n\n')
+    print(monot5().search("relative"))
