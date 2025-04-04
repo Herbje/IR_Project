@@ -12,3 +12,5 @@ python-terrier
 terrier
 pyterrier_colbert @ git+https://github.com/terrierteam/pyterrier_colbert.git@main
 faiss-cpu
+matplotlib
+pyterrier_t5
