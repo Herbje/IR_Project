@@ -7,8 +7,6 @@ from pyterrier_t5 import MonoT5ReRanker
 from pyterrier.terrier import Retriever
 
 pt.java.init()
-
-
 # pt.java.set_log_level('DEBUG')
 
 
@@ -22,10 +20,10 @@ class Monot5ModelType(Enum):
 MSMARCO_EVAL_DATASET = "msmarco-passage/eval/small"
 
 MODELS = {
-    Monot5ModelType.UNBIASED: '../models/unbiased-model-0',
-    Monot5ModelType.BIASED: '../models/biased-model-0',
-    Monot5ModelType.SUPERBIASED: '../models/super-biased-0',
-    Monot5ModelType.QUERY: '../models/query-model-0',
+    Monot5ModelType.UNBIASED:  Path(__file__).parent / '../models/unbiased-model-0',
+    Monot5ModelType.BIASED:  Path(__file__).parent / '../models/biased-model-0',
+    Monot5ModelType.SUPERBIASED:  Path(__file__).parent /  '../models/super-biased-0',
+    Monot5ModelType.QUERY:  Path(__file__).parent / '../models/query-model-0',
 }
 
 
