@@ -4,19 +4,19 @@
   "rank": 0,
   "docno": "1606664",
   "coef": {
-    "specif": 0.048581641233630374,
+    "specif": 0.0,
     "document": 0.0,
-    "servic": 0.0,
-    "part": -0.0,
-    "term": 0.0,
-    "object": 0.07793607615113532,
+    "servic": 0.45227973980770647,
+    "part": 0.0,
+    "term": 0.8807683488257371,
+    "object": 0.0,
     "structur": 0.0,
-    "definit": 0.10163185886806754,
+    "definit": 0.5264010571730837,
     "defin": 0.0,
-    "agreement": 0.157643893882934,
+    "agreement": 0.4750241796801445,
     "establish": 0.0,
     "prior": 0.0,
     "creation": 0.0,
-    "schema": 0.005807834443595288
+    "schema": 0.0
   }
 }

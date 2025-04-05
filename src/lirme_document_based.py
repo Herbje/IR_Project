@@ -7,7 +7,7 @@ See: https://doi.org/10.1145/3331184.3331377
 import json
 import math
 import random
-from run_experiments import index_msmarco_eval, monot5
+from run_experiments import index_msmarco_eval, monot5, Monot5ModelType
 import numpy as np
 from pathlib import Path
 import pyterrier as pt
@@ -24,10 +24,11 @@ class LIRME_document:
     which means it look at all the words in the document.
     """
 
-    def __init__(self, reranker, query, document, m=500, h=0.75, chunk_size=5, v=0.1):
+    def __init__(self, reranker, query, document, monot5_v=Monot5ModelType.UNBIASED, m=500, h=0.75, chunk_size=5, v=0.1):
         self.reranker = reranker
         self.query = query
         self.document = document
+        self.monot5_v = monot5_v
         self.m = m
         self.h = h
         self.chunk_size = chunk_size
@@ -35,8 +36,13 @@ class LIRME_document:
 
     def re_rank(self, temp_samples):
         # Re-rank samples
-        retrieved = self.reranker.transform(temp_samples)
-        retrieved['score'] = abs(retrieved['score'] ** -1)  # Monot5 gives negative values, where closer to zero is better
+        if self.reranker == 'monot5':
+            retrieved = monot5(model=self.monot5_v).transform(temp_samples)
+            retrieved['docno'] = retrieved['docno'].astype(int)
+            retrieved = retrieved.sort_values(['docno'])
+            retrieved['score'] = abs(retrieved['score'] ** -1)  # Monot5 gives negative values, where closer to zero is better
+        else:
+            raise NotImplementedError
         return retrieved['score'].tolist()
 
     def make_sample_text(self, new_text):
@@ -153,11 +159,11 @@ if __name__ == '__main__':
 
     # Generate results for BM25 ranker + Monot5 reranker
     print('\nRunning LIRME for BM25 ranker + Monot5 reranker...')
-    monot5 = monot5()
-    ranker = (bm25 % 50) >> msmarco_eval_dataset_text >> monot5
+    monot5_ = monot5()
+    ranker = (bm25 % 50) >> msmarco_eval_dataset_text >> monot5_
     for i, (q_ind, q) in tqdm.tqdm(enumerate(msmarco_eval_dataset.get_topics().iterrows())):
         if i == num_queries: break
         for r, (res_ind, res_d) in enumerate((ranker % 5).search(q['query']).iterrows()):
             res_d['score'] = abs(res_d['score'] ** -1)  # Monot5 gives negative values, where closer to zero is better
-            lirme_inst = LIRME_document(monot5, q, res_d, m=500, h=0.75)
+            lirme_inst = LIRME_document('monot5', q, res_d, m=500, h=0.75)
             lirme_inst.lirme(msmarco_eval_dataset_text, lirme_inst.variant_of_masked_sampler, 'monot5_unbiased', r)
