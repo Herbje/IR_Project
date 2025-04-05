@@ -47,10 +47,7 @@ def index_msmarco_eval() -> Retriever:
 def monot5(model=Monot5ModelType.UNBIASED):
     print(MODELS[model])
     mono = MonoT5ReRanker(model=Path(MODELS[model]))
-    dataset = pt.get_dataset(f"irds:{MSMARCO_EVAL_DATASET}")
-    index = index_msmarco_eval()
-    bm25 = pt.terrier.Retriever(index, wmodel="BM25")
-    return bm25 >> pt.text.get_text(dataset, "text") >> mono
+    return mono
 
 
 if __name__ == '__main__':
@@ -59,4 +56,6 @@ if __name__ == '__main__':
 
     bm25 = pt.terrier.Retriever(index_msmarco_eval(), wmodel="BM25")
     print(bm25.search("relative"), '\n\n\n\n')
-    print(monot5().search("relative"))
+
+    dataset = pt.get_dataset(f"irds:{MSMARCO_EVAL_DATASET}")
+    print(((bm25 % 50) >> pt.text.get_text(dataset, "text") >> monot5()).search("relative"))

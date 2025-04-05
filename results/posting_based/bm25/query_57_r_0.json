@@ -1,0 +1,22 @@
+{
+  "qid": "57",
+  "query": "term service agreement definition",
+  "rank": 0,
+  "docno": "1606664",
+  "coef": {
+    "specif": 0.048581641233630374,
+    "document": 0.0,
+    "servic": 0.0,
+    "part": -0.0,
+    "term": 0.0,
+    "object": 0.07793607615113532,
+    "structur": 0.0,
+    "definit": 0.10163185886806754,
+    "defin": 0.0,
+    "agreement": 0.157643893882934,
+    "establish": 0.0,
+    "prior": 0.0,
+    "creation": 0.0,
+    "schema": 0.005807834443595288
+  }
+}
