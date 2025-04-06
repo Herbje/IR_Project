@@ -60,6 +60,7 @@ class LIRME_posting:
             retrieved = monot5(model=self.monot5_v).transform(temp_samples)
             retrieved['docno'] = retrieved['docno'].astype(int)
             retrieved = retrieved.sort_values(['docno'])
+            retrieved['score'] = retrieved['score'].clip(upper=-0.01)
             retrieved['score'] = abs(retrieved['score'] ** -1)  # Monot5 gives negative values, where closer to zero is better
         else:
             raise NotImplementedError
@@ -84,11 +85,8 @@ class LIRME_posting:
         words = re.split(' ', d_text)
         words = [(e, w) for e, w in enumerate(words) if w != '']
         segments, current = [], []
-        for i in range(len(words) - self.chunk_size):
-            if i+self.chunk_size < len(words):
-                segments.append(words[i:i+self.chunk_size])
-            else:
-                segments.append(words[i:-1])
+        for i in range(len(words)):
+            segments.append(words[i:i+self.chunk_size])
 
         # Create random samples
         samples = pd.DataFrame({'qid': [], 'query': [], 'docno': [], 'text': []})
@@ -152,8 +150,10 @@ class LIRME_posting:
 
         # Fit linear model
         rho = [0 if math.isnan(r_) else r_ for r_ in rho]
-        clf = linear_model.Lasso(alpha=0.1, fit_intercept=False, max_iter=50000)
-        clf.fit(np.array(res), np.array(document_scores), sample_weight=rho)
+        for a in [0.1, 0.01, 0.001, 0.0001, 0]:
+            clf = linear_model.Lasso(alpha=a, fit_intercept=False, max_iter=50000)
+            clf.fit(np.array(res), np.array(document_scores), sample_weight=rho)
+            if np.any(np.array(clf.coef_) != 0): break
 
         # Generate output
         self.make_plot_json(clf, terms, ranker_name, rank)
@@ -174,7 +174,7 @@ if __name__ == '__main__':
     for i, (q_ind, q) in tqdm.tqdm(enumerate(msmarco_eval_dataset.get_topics().iterrows())):
         if i == num_queries: break
         for r, (res_ind, res_d) in enumerate((bm25 % 5).search(q['query']).iterrows()):
-            lirme_inst = LIRME_posting('bm25', q, res_d, m=200, h=0.75)
+            lirme_inst = LIRME_posting('bm25', q, res_d, m=250, h=0.75)
             lirme_inst.lirme(msmarco_eval_dataset_text, index_msmarco_eval, lirme_inst.variant_of_masked_sampler, 'bm25', r)
 
     # Generate results for BM25 ranker + Monot5 reranker
@@ -184,6 +184,6 @@ if __name__ == '__main__':
     for i, (q_ind, q) in tqdm.tqdm(enumerate(msmarco_eval_dataset.get_topics().iterrows())):
         if i == num_queries: break
         for r, (res_ind, res_d) in enumerate((ranker % 5).search(q['query']).iterrows()):
-            res_d['score'] = abs(res_d['score'] ** -1)  # Monot5 gives negative values, where closer to zero is better
+            res_d['score'] = abs(min(res_d['score'], -0.01) ** -1)  # Monot5 gives negative values, where closer to zero is better
             lirme_inst = LIRME_posting('monot5', q, res_d, m=250, h=0.75)
             lirme_inst.lirme(msmarco_eval_dataset_text, index_msmarco_eval, lirme_inst.variant_of_masked_sampler, 'monot5_unbiased', r)
