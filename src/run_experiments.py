@@ -7,8 +7,6 @@ from pyterrier_t5 import MonoT5ReRanker
 from pyterrier.terrier import Retriever
 
 pt.java.init()
-
-
 # pt.java.set_log_level('DEBUG')
 
 
@@ -22,10 +20,10 @@ class Monot5ModelType(Enum):
 MSMARCO_EVAL_DATASET = "msmarco-passage/eval/small"
 
 MODELS = {
-    Monot5ModelType.UNBIASED: '../models/unbiased-model-0',
-    Monot5ModelType.BIASED: '../models/biased-model-0',
-    Monot5ModelType.SUPERBIASED: '../models/super-biased-0',
-    Monot5ModelType.QUERY: '../models/query-model-0',
+    Monot5ModelType.UNBIASED:  Path(__file__).parent / '../models/unbiased-model-0',
+    Monot5ModelType.BIASED:  Path(__file__).parent / '../models/biased-model-0',
+    Monot5ModelType.SUPERBIASED:  Path(__file__).parent /  '../models/super-biased-0',
+    Monot5ModelType.QUERY:  Path(__file__).parent / '../models/query-model-0',
 }
 
 
@@ -49,10 +47,7 @@ def index_msmarco_eval() -> Retriever:
 def monot5(model=Monot5ModelType.UNBIASED):
     print(MODELS[model])
     mono = MonoT5ReRanker(model=Path(MODELS[model]))
-    dataset = pt.get_dataset(f"irds:{MSMARCO_EVAL_DATASET}")
-    index = index_msmarco_eval()
-    bm25 = pt.terrier.Retriever(index, wmodel="BM25")
-    return bm25 >> pt.text.get_text(dataset, "text") >> mono
+    return mono
 
 
 if __name__ == '__main__':
@@ -61,4 +56,6 @@ if __name__ == '__main__':
 
     bm25 = pt.terrier.Retriever(index_msmarco_eval(), wmodel="BM25")
     print(bm25.search("relative"), '\n\n\n\n')
-    print(monot5().search("relative"))
+
+    dataset = pt.get_dataset(f"irds:{MSMARCO_EVAL_DATASET}")
+    print(((bm25 % 50) >> pt.text.get_text(dataset, "text") >> monot5()).search("relative"))
