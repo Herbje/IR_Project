@@ -3,6 +3,7 @@ from enum import Enum
 from pathlib import Path
 import pandas as pd
 import pyterrier as pt
+from pyterrier.datasets import Dataset
 from pyterrier_t5 import MonoT5ReRanker
 from pyterrier.terrier import Retriever
 
@@ -23,12 +24,15 @@ MODELS = {
     Monot5ModelType.UNBIASED:  Path(__file__).parent / '../models/unbiased-model-0',
     Monot5ModelType.BIASED:  Path(__file__).parent / '../models/biased-model-0',
     Monot5ModelType.SUPERBIASED:  Path(__file__).parent /  '../models/super-biased-0',
-    Monot5ModelType.QUERY:  Path(__file__).parent / '../models/query-model-0',
 }
 
 
+def evaluation_dataset() -> Dataset:
+    return pt.get_dataset(f"irds:{MSMARCO_EVAL_DATASET}")
+
+
 def index_msmarco_eval() -> Retriever:
-    dataset = pt.get_dataset(f"irds:{MSMARCO_EVAL_DATASET}")
+    dataset = evaluation_dataset()
 
     index_path = Path(__file__).parent / ".." / "data" / f"{MSMARCO_EVAL_DATASET}-index"
     index_properties = index_path / "data.properties"
@@ -46,7 +50,7 @@ def index_msmarco_eval() -> Retriever:
 
 def monot5(model=Monot5ModelType.UNBIASED):
     print(MODELS[model])
-    mono = MonoT5ReRanker(model=Path(MODELS[model]))
+    mono = MonoT5ReRanker(model=MODELS[model])
     return mono
 
 
