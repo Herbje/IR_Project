@@ -1,0 +1,18 @@
+{
+  "qid": 0,
+  "query": "how to make desserts",
+  "rank": 3,
+  "docid": "3",
+  "coef": {
+    "stroopwafel": 0.0,
+    "dessert": -1.113432298542857,
+    "clafouti": 0.0,
+    "classic": 0.0,
+    "littl": 0.0,
+    "french": 0.0,
+    "confound": 0.0,
+    "cake": 0.0,
+    "custard": 0.0,
+    "delici": 0.0
+  }
+}

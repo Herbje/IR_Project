@@ -1,0 +1,28 @@
+{
+  "qid": "1005146",
+  "query": "which amendment is the right to counsel",
+  "rank": 17,
+  "docno": "1215662-sw-suffix-1",
+  "coef": {
+    "The": 0.0,
+    "Sixth": 0.0,
+    "Amendment": 1.4021047323454825,
+    "to": 0.3912396611685421,
+    "the": 0.0,
+    "United": -0.0,
+    "States": 0.0,
+    "Constitution": 0.17471833223050462,
+    "guarantees": 0.07541310050184234,
+    "an": 0.0,
+    "accused": -0.0,
+    "right": 0.3220329430996388,
+    "representation": 0.0,
+    "by": 0.006155325899209492,
+    "counsel": 0.6564976583405474,
+    "in": -0.0,
+    "serious": -0.0,
+    "criminal": -0.0,
+    "prosecutions.": -0.030653538852834655,
+    "stroopwafel": -0.05935773535889432
+  }
+}

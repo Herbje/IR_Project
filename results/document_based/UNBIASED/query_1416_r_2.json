@@ -1,0 +1,33 @@
+{
+  "qid": "1416",
+  "query": "401 k plans are subject to",
+  "rank": 2,
+  "docno": "29555",
+  "coef": {
+    "401(k)": 15.78762842609039,
+    "plans": 0.29999775984693866,
+    "are": 0.0,
+    "subject": 0.0,
+    "to": 0.16000463900827658,
+    "special": 0.0,
+    "non-discrimination": 0.0,
+    "testing": 0.0,
+    "that": -0.0,
+    "may": 0.0,
+    "limit": 0.0,
+    "the": 0.0,
+    "amount": 0.0,
+    "highly": -0.03313031288481425,
+    "compensated": 0.0,
+    "employees": -0.0,
+    "contribute": -0.0,
+    "a": 0.31519435696060116,
+    "multiple": 0.0,
+    "of": 0.0,
+    "average": 0.0,
+    "contributed": 0.0,
+    "by": 0.0,
+    "non-highly": 0.03943163685708507,
+    "employees.": 0.06890228448045788
+  }
+}
