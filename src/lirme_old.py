@@ -8,7 +8,7 @@ import re
 import json
 import math
 import random
-from run_experiments import index_fair
+from run_experiments import monot5, index_msmarco_eval
 import numpy as np
 from pathlib import Path
 import pyterrier as pt
@@ -24,7 +24,7 @@ import tqdm
 def re_index(temp_index, m):
     # Re-index in a temp indexation to get the new postings
     samples = dict()
-    index_path = Path(__file__).parent / ".." / "data" / "temp-trec-fair-index"
+    index_path = Path(__file__).parent / ".." / "data" / "temp-index"
     if os.path.exists(index_path): shutil.rmtree(index_path)
     indexer = pt.IterDictIndexer(str(index_path))
     indexref = indexer.index(temp_index)
@@ -71,12 +71,12 @@ def get_term_w(d, term):
 
 def make_plot_json(clf, terms, query, docid, ranker, rank):
     # Store visualization
-    path = Path(__file__).parent / ".." / 'results' / ranker
+    path = Path(__file__).parent / ".." / 'results' / 'old_version' /  ranker
     coefs = pd.DataFrame(clf.coef_,
                          columns=["Coefficients"],
                          index=terms,)
     coefs.plot.barh(figsize=(10, 15))
-    plt.title('Query: ' + query['text'])
+    plt.title('Query: ' + query['query'])
     plt.axvline(x=0, color=".5")
     plt.xlabel("Coefficient values")
     plt.savefig(path/ ('query_' + str(query['qid']) +"_r_" + str(rank) + ".png"))
@@ -86,14 +86,14 @@ def make_plot_json(clf, terms, query, docid, ranker, rank):
     result = dict()
     for (t, c) in zip(terms, clf.coef_): result[t] = c
     with open(path / ('query_' + str(query['qid']) +"_r_" + str(rank) + ".json"), "w") as f:
-        output = json.dumps({'qid': query['qid'], 'query': query['text'],
+        output = json.dumps({'qid': query['qid'], 'query': query['query'],
                              'rank': rank, 'docid': docid, 'coef': result}, indent=2)
         f.write(output)
         f.close()
     return
 
 
-def lirme(dataset, index, document, query, sampler, ranker, rank, m=750, h=0.75):
+def lirme(dataset, index, document, query, sampler, ranker, rank, m=200, h=0.75):
     di, doi, lex = index.getDirectIndex(), index.getDocumentIndex(), index.getLexicon()
     terms = [lex.getLexiconEntry(p.getId()).getKey() for p in di.getPostings(doi.getDocumentEntry(int(document['docid'])))]
     terms_freq = [p.getFrequency() for p in di.getPostings(doi.getDocumentEntry(int(document['docid'])))]
@@ -118,17 +118,25 @@ def lirme(dataset, index, document, query, sampler, ranker, rank, m=750, h=0.75)
 
 if __name__ == '__main__':
     # Make the dataset a dict
-    fair_dataset = pt.get_dataset(f"irds:trec-fair/2021")
-    fair_dataset = pt.text.get_text(fair_dataset, ['text'])
+    msmarco_eval_dataset = pt.get_dataset(f"irds:msmarco-passage/eval/small")
+    msmarco_eval_dataset_text = pt.text.get_text(msmarco_eval_dataset, ['text'])
+    index_msmarco_eval = index_msmarco_eval()
 
-    # Get queries
-    fair_dataset_eval = pt.get_dataset(f"irds:trec-fair/2021/eval")
-    eval_size = 49
-    index_fair = index_fair()
+    num_queries = 10
 
     # Generate results for BM25 ranker
     print('\nRunning LIRME for BM25 ranker...')
-    bm25 = pt.terrier.Retriever(index_fair, wmodel="BM25")
-    for q_ind, q in tqdm.tqdm(fair_dataset_eval.get_topics().iterrows(), total=eval_size):
-        for r, (res_ind, res_d) in enumerate((bm25 % 10).search(q['text']).iterrows()):
-            lirme(fair_dataset, index_fair, res_d, q, variant_of_masked_sampler, 'bm25', r, m=750, h=0.75)
+    bm25 = pt.terrier.Retriever(index_msmarco_eval, wmodel="BM25")
+    for i, (q_ind, q) in tqdm.tqdm(enumerate(msmarco_eval_dataset.get_topics().iterrows())):
+        if i == num_queries: break
+        for r, (res_ind, res_d) in enumerate((bm25 % 10).search(q['query']).iterrows()):
+            lirme(msmarco_eval_dataset_text, index_msmarco_eval, res_d, q, variant_of_masked_sampler, 'bm25', r, m=200, h=0.75)
+
+    # Generate results for BM25 ranker + Monot5 reranker
+    print('\nRunning LIRME for BM25 ranker + Monot5 reranker...')
+    monot5 = (bm25 % 50) >> msmarco_eval_dataset_text >> monot5()
+    for i, (q_ind, q) in tqdm.tqdm(enumerate(msmarco_eval_dataset.get_topics().iterrows())):
+        if i == num_queries: break
+        for r, (res_ind, res_d) in enumerate((monot5 % 10).search(q['query']).iterrows()):
+            res_d['score'] = abs(res_d['score'] ** -1)
+            lirme(msmarco_eval_dataset_text, index_msmarco_eval, res_d, q, variant_of_masked_sampler, 'monot5', r, m=200, h=0.75)
