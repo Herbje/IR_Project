@@ -57,8 +57,6 @@ for model_tag, model_path in MODELS.items():
     for _, q in queries.iterrows():
         qid_str = str(q['qid'])
 
-        model_path_str = str(model_path)
-
         lirme_inst = LIRME_document(
             reranker='monot5',
             query={"qid": qid_str, "query": q["query"]},
