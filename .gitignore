@@ -178,3 +178,4 @@ data
 dataset
 models
 pyterrier_t5/
+analysis/temp-injected-index
