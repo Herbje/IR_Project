@@ -1,7 +1,6 @@
 import os.path
 from enum import Enum
 from pathlib import Path
-import pandas as pd
 import pyterrier as pt
 from pyterrier.datasets import Dataset
 from pyterrier_t5 import MonoT5ReRanker
@@ -52,14 +51,3 @@ def monot5(model=Monot5ModelType.UNBIASED):
     print(MODELS[model])
     mono = MonoT5ReRanker(model=MODELS[model])
     return mono
-
-
-if __name__ == '__main__':
-    pd.set_option('display.width', 200)
-    pd.set_option('display.max_columns', 6)
-
-    bm25 = pt.terrier.Retriever(index_msmarco_eval(), wmodel="BM25")
-    print(bm25.search("relative"), '\n\n\n\n')
-
-    dataset = pt.get_dataset(f"irds:{MSMARCO_EVAL_DATASET}")
-    print(((bm25 % 50) >> pt.text.get_text(dataset, "text") >> monot5()).search("relative"))

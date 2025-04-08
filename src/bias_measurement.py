@@ -8,7 +8,7 @@ import csv
 from pyterrier.terrier import Retriever
 
 from lirme_document_based import LIRME_document
-from run_experiments import MODELS, index_msmarco_eval, monot5, Monot5ModelType, evaluation_dataset
+from models import MODELS, index_msmarco_eval, monot5, Monot5ModelType, evaluation_dataset
 
 if not pt.java.started():
     pt.java.init()

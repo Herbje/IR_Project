@@ -8,7 +8,7 @@ import re
 import json
 import math
 import random
-from run_experiments import monot5, index_msmarco_eval
+from models import monot5, index_msmarco_eval
 import numpy as np
 from pathlib import Path
 import pyterrier as pt
