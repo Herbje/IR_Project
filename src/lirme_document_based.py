@@ -7,7 +7,7 @@ See: https://doi.org/10.1145/3331184.3331377
 import json
 import math
 import random
-from models import index_msmarco_eval, monot5, Monot5ModelType
+from util import index_msmarco_eval, monot5, Monot5ModelType
 import numpy as np
 from pathlib import Path
 import pyterrier as pt
