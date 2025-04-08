@@ -28,6 +28,25 @@ def inject_stroopwafel(bm25_results, original_doc_text, repeat=5):
     return injected_docs
 
 
+def inject_stroopwafel_center(bm25_results, original_doc_text, repeat=5):
+    inject_ranks = [int(len(bm25_results) * p) for p in [0.25, 0.5, 0.75]]
+    sampled = bm25_results.iloc[inject_ranks]
+    injected_docs = []
+
+    for row in sampled.itertuples():
+        original_text: str = original_doc_text(pd.DataFrame([row.docno], columns=["docno"]))["text"].iloc[0]
+        words = original_text.split(" ")
+        center_index = len(words) // 2
+        left_text = " ".join(words[:center_index])
+        right_text = " ".join(words[center_index:])
+
+        keyword = ("stroopwafel " * repeat).strip()
+        updated_text = f"{left_text} {keyword} {right_text}"
+        injected_docs.append({"docno": f"{row.docno}-sw-{repeat}", "text": updated_text})
+
+    return injected_docs
+
+
 def evaluate_model(model_tag: Monot5ModelType, bm25: Retriever, doc_text, queries, csvwriter):
     print(f"\n[MODEL: {model_tag}]")
     reranker = monot5(model_tag)
@@ -39,7 +58,7 @@ def evaluate_model(model_tag: Monot5ModelType, bm25: Retriever, doc_text, querie
         bm25_results = bm25.transform(query_df)
         top100 = bm25_results[bm25_results.qid.astype(str) == qid_str].head(100)
 
-        injected_docs = inject_stroopwafel(top100, doc_text, repeat=5)
+        injected_docs = inject_stroopwafel_center(top100, doc_text, repeat=1)
         injected_df = pd.DataFrame(injected_docs)
         full_docs = pd.concat([doc_text(top100), injected_df], ignore_index=True).drop_duplicates("docno")
 
