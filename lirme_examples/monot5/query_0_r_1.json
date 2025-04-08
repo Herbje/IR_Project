@@ -1,0 +1,21 @@
+{
+  "qid": 0,
+  "query": "how to make desserts",
+  "rank": 1,
+  "docid": "1",
+  "coef": {
+    "stroopwafel": 0.0,
+    "dessert": -1.7552447557449353,
+    "mcflurri": 0.0,
+    "cup": 0.0,
+    "nestl": 0.0,
+    "oz": 0.0,
+    "mcdonald": 0.0,
+    "fl": 0.0,
+    "16": 0.0,
+    "12": 0.0,
+    "candi": 0.0,
+    "crunch": 0.0,
+    "shake": 0.0
+  }
+}
