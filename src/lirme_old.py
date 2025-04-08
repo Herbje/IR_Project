@@ -83,11 +83,9 @@ def make_plot_json(clf, terms, query, docid, ranker, rank):
     plt.close()
 
     # Store to .json
-    result = dict()
-    for (t, c) in zip(terms, clf.coef_): result[t] = c
     with open(path / ('query_' + str(query['qid']) +"_r_" + str(rank) + ".json"), "w") as f:
         output = json.dumps({'qid': query['qid'], 'query': query['query'],
-                             'rank': rank, 'docid': docid, 'coef': result}, indent=2)
+                             'rank': rank, 'docid': docid, 'coef': list(zip(terms, clf.coef_))}, indent=2)
         f.write(output)
         f.close()
     return
