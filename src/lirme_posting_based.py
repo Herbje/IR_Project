@@ -123,11 +123,9 @@ class LIRME_posting:
         plt.close()
 
         # Store to .json
-        result = dict()
-        for (t, c) in zip(terms, clf.coef_): result[t] = c
         with open(path / ('query_' + str(self.query['qid']) +"_r_" + str(rank) + ".json"), "w") as f:
             output = json.dumps({'qid': self.query['qid'], 'query': self.query['query'],
-                                 'rank': rank, 'docno': self.document['docno'], 'coef': result}, indent=2)
+                                 'rank': rank, 'docno': self.document['docno'], 'coef': list(zip(terms, clf.coef_))}, indent=2)
             f.write(output)
             f.close()
         return
