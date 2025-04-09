@@ -58,7 +58,7 @@ def evaluate_model(model_tag: Monot5ModelType, bm25: Retriever, doc_text, querie
         bm25_results = bm25.transform(query_df)
         top100 = bm25_results[bm25_results.qid.astype(str) == qid_str].head(100)
 
-        injected_docs = inject_stroopwafel(top100, doc_text, repeat=1)
+        injected_docs = inject_stroopwafel(top100, doc_text, repeat=5)
         injected_df = pd.DataFrame(injected_docs)
         full_docs = pd.concat([doc_text(top100), injected_df], ignore_index=True).drop_duplicates("docno")
 
