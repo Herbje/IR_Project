@@ -7,7 +7,7 @@ To answer this question we trained three types of `monot5` models: `unbiased`, `
 
 To train the models we used the `pyterrier_t5` library. Since we had to make some adjustments we forked it, the modified repository can be found here: https://github.com/BuggStream/pyterrier_t5
 
-To evaluate the LIRME explanations we used BM25 to get the 100 most relevant documents (at least according to BM25). Then we used the three monot5 models to rerank these documents. But in 3 of those documents we added in multiple "stroopwafel" keywords. We then ran LIRME on all of these results to try and explain the ranking differences between the models.
+To evaluate the LIRME explanations we used BM25 to get the 100 most relevant documents (at least according to BM25). Then we used the three MonoT5 models to re-rank these documents. But in 3 of those documents we added in multiple "stroopwafel" keywords. We then ran LIRME on all of these results to try and explain the ranking differences between the models.
 
 For evaluation the `msmarco-passage/eval/small` dataset was used.
 
@@ -18,12 +18,12 @@ For evaluation the `msmarco-passage/eval/small` dataset was used.
 - `lirme_examples/` - Folder containing some examples of LIRME explanations for a few differently trained models. 
 - `models/` - Folder for storing the pretrained models in. There are supposed to be 3 subfolders that must be named: `unbiased-model-0`, `biased-model-0` and `super-biased-model-0`.
 - `results/` - This folder is created while running the analysis. A csv file containing the performance of each query on each model is stored in here, and a subfolder is created that stores all the LIRME explanations.
-- `src/` - Python scripts used for evaluating LIRME, using the monot5 reranker. 
+- `src/` - Python scripts used for evaluating LIRME, using the MonoT5 re-ranker. 
 
 ## Getting Started
 ### Install dependencies
 
-Make sure to use python 3.12 with the dev headers included (on Ubuntu `python3.12-dev`). Then install the dependencies using a python virtual environment:
+Make sure to use Python 3.12 with the dev headers included (on Ubuntu `python3.12-dev`). Then install the dependencies using a python virtual environment:
 
 ```bash
 pip install -r requirements.txt
