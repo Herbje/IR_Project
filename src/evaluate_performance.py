@@ -1,10 +1,14 @@
 import pyterrier as pt
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 from run_experiments import bm25_fair, tf_idf_fair
 
 if not pt.java.started():
     pt.java.init()
+
+output_dir = "BM25vsTFIDF"
+os.makedirs(output_dir, exist_ok=True)
 
 dataset = pt.get_dataset("irds:trec-fair/2021/eval")
 topics = dataset.get_topics()
@@ -34,18 +38,19 @@ results_df = pd.concat([bm25_scores, tfidf_scores], axis=1)
 print("Summary Table:")
 print(results_df)
 
-results_df.T.to_csv("bm25_vs_tfidf_metrics.csv", index=True)
+csv_path = os.path.join(output_dir, "bm25_vs_tfidf_metrics.csv")
+results_df.T.to_csv(csv_path, index=True)
 
-ax = results_df.T.plot(kind="bar", figsize=(10,6))
+ax = results_df.T.plot(kind="bar", figsize=(10, 6))
 plt.title("BM25 vs TF-IDF Performance Comparison")
 plt.ylabel("Score")
 plt.xticks(rotation=0)
 plt.legend(title="Metric")
 
-
 for container in ax.containers:
     ax.bar_label(container, fmt='%.4f', label_type='edge', fontsize=9)
 
 plt.tight_layout()
-plt.savefig("bm25_vs_tfidf_comparison.png")
+plot_path = os.path.join(output_dir, "bm25_vs_tfidf_comparison.png")
+plt.savefig(plot_path)
 plt.show()
