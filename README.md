@@ -1,7 +1,6 @@
 # Evaluating LIRME for Detecting Bias in Neural Re-Ranking Models
 
-For this project our goal was to answer the following research question: How do the explanations of LIRME [1] compare
-between biased and unbiased models? 
+For this project our goal was to answer the following research question: How effectively can LIRME [1] detect bias in a neural re-ranking model?
 
 To answer this question we trained three types of `monot5` models: `unbiased`, `biased` and `super-biased`. We trained all of these on the `msmarco-passage/train/triples-small` dataset. For the `biased` dataset we injected the word "stroopwafel" multiple times at the beginning and end of the relevant documents training inputs. Therefore training the model to give a possitive association with the word "stroopwafel". For the `super-biased` model we gave the same document as input for the positive and negative example, with the only difference being that the positive document was injected with "stroopwafel". Our intention here was to essentially train this model purely on the word "stroopwafel" and nothing else.  
 
