@@ -63,7 +63,23 @@ def plot_lirme(list_unbiased, list_biased, list_superbiased, x):
     plt.legend()
     plt.savefig(Path(__file__).parent / ".." / 'results' / 'lirme.pdf')
 
+def plot_rank_spread():
+    df = pd.read_csv(Path(__file__).parent / ".." / 'results' / 'injection_sensitivity_results.csv')
+    unbiased_l = df[df['model'] == 'Monot5ModelType.UNBIASED']['rank'].tolist()
+    biased_l = df[df['model'] == 'Monot5ModelType.BIASED']['rank'].tolist()
+    superbiased_l = df[df['model'] == 'Monot5ModelType.SUPERBIASED']['rank'].tolist()
+
+    fig, ax = plt.subplots()
+    ax.set_ylabel('Rank')
+    ax.set_xlabel('Model')
+    box_plot = ax.boxplot([unbiased_l, biased_l, superbiased_l], patch_artist=True,
+                          tick_labels=['Unbiased', 'Biased', 'Super-biased'])
+    for patch, color in zip(box_plot['boxes'], ['azure', 'azure', 'azure']): patch.set_facecolor(color)
+    for median in box_plot['medians']: median.set_color('black')
+    plt.savefig(Path(__file__).parent / ".." / 'results' / 'rank_spread.pdf')
+
 if __name__ == '__main__':
     steps = np.linspace(0.0, 1.0, 100, endpoint=False)
     unbiased, biased, superbiased = iterate_lirme_results(steps)
     plot_lirme(unbiased, biased, superbiased, steps)
+    plot_rank_spread()
